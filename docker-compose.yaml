@@ -1,20 +1,20 @@
 version: '3.1'
 services:
   web:
-    build: .
+    image: odoo:17  # <--- MUDANÇA: Baixa o Odoo pronto em vez de tentar criar
     depends_on:
       - db
     ports:
       - "8069:8069"
     volumes:
       - odoo-data:/var/lib/odoo
-      # - ./config:/etc/odoo  <-- ISSO GERALMENTE DÁ ERRO NO PRIMEIRO DEPLOY
-      - ./extra-addons:/mnt/extra-addons
+      - ./config:/etc/odoo
+      - ./extra-addons:/mnt/extra-addons # Seus arquivos do Git entrarão aqui
     environment:
       - HOST=db
       - USER=odoo
       - PASSWORD=odoo
-    restart: always  # <-- IMPORTANTE: Tenta reiniciar se o banco demorar
+    restart: always
 
   db:
     image: postgres:15
