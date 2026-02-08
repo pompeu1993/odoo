@@ -8,17 +8,13 @@ services:
       - "8069:8069"
     volumes:
       - odoo-data:/var/lib/odoo
-      - ./config:/etc/odoo
+      # - ./config:/etc/odoo  <-- ISSO GERALMENTE DÁ ERRO NO PRIMEIRO DEPLOY
       - ./extra-addons:/mnt/extra-addons
     environment:
       - HOST=db
       - USER=odoo
       - PASSWORD=odoo
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8069/web/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    restart: always  # <-- IMPORTANTE: Tenta reiniciar se o banco demorar
 
   db:
     image: postgres:15
@@ -29,6 +25,7 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - odoo-db-data:/var/lib/postgresql/data/pgdata
+    restart: always
 
 volumes:
   odoo-data:
